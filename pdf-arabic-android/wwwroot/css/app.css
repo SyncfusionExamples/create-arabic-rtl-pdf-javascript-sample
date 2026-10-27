@@ -5,3 +5,4 @@ button { background: #512bd4; color: #fff; border: 0; border-radius: 6px; paddin
 button:disabled { opacity: .5; }
 .status { margin-top: 16px; word-break: break-all; }
 .error { color: #b00020; }
+.output-block { margin-top: 12px; padding: 12px; border: 1px solid #dcdcdc; border-radius: 4px; background: #f8f8f8; font-family: monospace; white-space: pre-wrap; overflow: auto; max-height: 300px; }

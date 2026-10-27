@@ -7,7 +7,8 @@
 <textarea dir="rtl" lang="ar" @bind="_text" disabled="@_busy"></textarea>
 
 <div>
-    <button @onclick="GenerateAsync" disabled="@_busy">@(_busy ? "Generating..." : "Generate PDF")</button>
+    <button @onclick="GenerateAsync" disabled="@_busy">@(_busy ? "Working..." : "Generate PDF")</button>
+    <button id="extractLinesBtn" @onclick="ExtractAsync" disabled="@_busy">Extract Text</button>
 </div>
 
 @if (_path is not null)
@@ -19,7 +20,13 @@
     <p class="status error">@_error</p>
 }
 
+@if (_extracted is not null)
+{
+    <pre id="extractedTextOutput" class="output-block" dir="rtl" lang="ar">@_extracted</pre>
+}
+
 @code {
+    private string? _extracted;
     private string? _text;
     private string? _path;
     private string? _error;
@@ -34,6 +41,13 @@
     {
         _path = await Pdf.GenerateAndSaveAsync(JS, _text);
         await Pdf.OpenAsync(_path);
+    });
+
+    private Task ExtractAsync() => RunAsync(async () =>
+    {
+        _extracted = null;
+        try { _extracted = await Pdf.ExtractTextAsync(JS); }
+        catch (Exception ex) { _extracted = $"Error: {ex.Message}"; }
     });
 
     private async Task RunAsync(Func<Task> action)

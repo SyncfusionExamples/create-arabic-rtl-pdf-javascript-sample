@@ -26,6 +26,12 @@ public class PdfService
         return await module.InvokeAsync<string>("getDefaultArabicText");
     }
 
+    public async Task<string> ExtractTextAsync(IJSRuntime js)
+    {
+        await using var module = await js.InvokeAsync<IJSObjectReference>("import", "./js/pdf-generator.js");
+        return await module.InvokeAsync<string>("extractTextFromPdf");
+    }
+
     /// <summary>Opens the PDF in an installed viewer (via FileProvider), or falls back to the share sheet.</summary>
     public async Task OpenAsync(string path)
     {
