@@ -1,0 +1,47 @@
+@page "/"
+@inject IJSRuntime JS
+@inject PdfService Pdf
+
+<h1>Arabic PDF with @@syncfusion/ej2-pdf</h1>
+
+<textarea dir="rtl" lang="ar" @bind="_text" disabled="@_busy"></textarea>
+
+<div>
+    <button @onclick="GenerateAsync" disabled="@_busy">@(_busy ? "Generating..." : "Generate PDF")</button>
+</div>
+
+@if (_path is not null)
+{
+    <p class="status">Saved to: @_path</p>
+}
+@if (_error is not null)
+{
+    <p class="status error">@_error</p>
+}
+
+@code {
+    private string? _text;
+    private string? _path;
+    private string? _error;
+    private bool _busy;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _text = await Pdf.GetDefaultTextAsync(JS);
+    }
+
+    private Task GenerateAsync() => RunAsync(async () =>
+    {
+        _path = await Pdf.GenerateAndSaveAsync(JS, _text);
+        await Pdf.OpenAsync(_path);
+    });
+
+    private async Task RunAsync(Func<Task> action)
+    {
+        _busy = true;
+        _error = null;
+        try { await action(); }
+        catch (Exception ex) { _error = ex.Message; }
+        finally { _busy = false; }
+    }
+}

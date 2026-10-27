@@ -1,0 +1,14 @@
+{
+  "name": "arabic-pdf-blazor-hybrid",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "build:js": "esbuild js/pdf-generator.js --bundle --format=esm --minify --outfile=wwwroot/js/pdf-generator.js"
+  },
+  "dependencies": {
+    "@syncfusion/ej2-pdf": "*"
+  },
+  "devDependencies": {
+    "esbuild": "^0.24.0"
+  }
+}
