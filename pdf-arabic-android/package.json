@@ -6,7 +6,8 @@
     "build:js": "esbuild js/pdf-generator.js --bundle --format=esm --minify --outfile=wwwroot/js/pdf-generator.js"
   },
   "dependencies": {
-    "@syncfusion/ej2-pdf": "*"
+    "@syncfusion/ej2-pdf": "*",
+    "@syncfusion/ej2-pdf-data-extract": "*"
   },
   "devDependencies": {
     "esbuild": "^0.24.0"

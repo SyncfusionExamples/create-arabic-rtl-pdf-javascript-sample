@@ -8,9 +8,13 @@ import {
     PdfTextAlignment,
     PdfTrueTypeFont
 } from '@syncfusion/ej2-pdf';
+import { PdfDataExtractor } from '@syncfusion/ej2-pdf-data-extract';
 
 const arabicFontUrl =
     'https://cdn.syncfusion.com/content/pdf-resources/noto-naskh-arabic-regular.ttf';
+
+// Embedded in wwwroot/pdf and served from the app package (relative to the WebView base href)
+const pdfUrl = 'https://document.syncfusion.com/content/pdf-resources/ArbicText.pdf';
 
 const defaultArabicText =
 `سنبدأ بنظرة عامة مفاهيمية على مستند PDF بسيط. تم تصميم هذا الفصل ليكون توجيهًا مختصرًا قبل الغوص في مستند حقيقي وإنشاءه من البداية.
@@ -18,11 +22,12 @@ const defaultArabicText =
 رأس الصفحة هو ببساطة رقم إصدار PDF وتسلسل عشوائي للبيانات الثنائية. البيانات الثنائية تمنع التطبيقات الساذجة من معالجة ملف PDF كملف نصي. سيؤدي ذلك إلى ملف تالف ، لأن ملف PDF يتكون عادةً من نص عادي وبيانات ثنائية (على سبيل المثال ، يمكن تضمين ملف خط ثنائي بشكل مباشر في ملف PDF).`;
 
 let cachedFontBytes = null;
+let cachedPdfBytes = null;
 
 async function fetchAsUint8Array(url) {
     const response = await fetch(url);
     if (!response.ok) {
-        throw new Error(`Failed to download font (${response.status} ${response.statusText}): ${url}`);
+        throw new Error(`Failed to download resource (${response.status} ${response.statusText}): ${url}`);
     }
     return new Uint8Array(await response.arrayBuffer());
 }
@@ -73,4 +78,36 @@ export async function generateArabicPdf(text, fontSize) {
 
 export function getDefaultArabicText() {
     return defaultArabicText;
+}
+
+/**
+ * Extracts the text lines of page 0 from the sample Arabic PDF.
+ * The PDF is downloaded once and cached. Errors are logged and returned as text.
+ */
+export async function extractTextFromPdf(pdfBase64) {
+    try {
+        if (!cachedPdfBytes) {
+            cachedPdfBytes = await fetchAsUint8Array(pdfUrl);
+        }
+
+        const pdfDocument = new PdfDocument(cachedPdfBytes);
+        try {
+            const extractor = new PdfDataExtractor(pdfDocument);
+            const textCollection = extractor.extractTextLinesSync({
+                startPageIndex: 0,
+                endPageIndex: 0
+            });
+
+            let content = '';
+            for (let i = 0; i < textCollection.length; i++) {
+                content += textCollection[i].text + '\n';
+            }
+            return content;
+        } finally {
+            pdfDocument.destroy();
+        }
+    } catch (error) {
+        console.error('PDF text extraction failed:', error);
+        return `Error: ${error}`;
+    }
 }
