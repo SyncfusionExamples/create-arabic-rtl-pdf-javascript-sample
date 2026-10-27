@@ -1,0 +1,7 @@
+body { font-family: sans-serif; margin: 0; padding: 16px; background: #f5f5f8; }
+h1 { font-size: 1.3rem; }
+textarea { width: 100%; min-height: 160px; box-sizing: border-box; font-size: 1rem; padding: 8px; }
+button { background: #512bd4; color: #fff; border: 0; border-radius: 6px; padding: 12px 16px; margin: 8px 8px 0 0; font-size: 1rem; }
+button:disabled { opacity: .5; }
+.status { margin-top: 16px; word-break: break-all; }
+.error { color: #b00020; }
