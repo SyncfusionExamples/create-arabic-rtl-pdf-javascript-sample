@@ -161,7 +161,7 @@ export async function findText(searchText) {
             result.searchResults.forEach((bounds, pageNumber) => {
                 bounds.forEach((b, i) => {
                     total++;
-                    details += `Page ${pageNumber}, match ${i + 1}: "${result.searchText}" ` +
+                    details += `Page ${pageNumber}, match ${i + 1}: \n` +
                         `bounds { x: ${b.x.toFixed(2)}, y: ${b.y.toFixed(2)}, ` +
                         `width: ${b.width.toFixed(2)}, height: ${b.height.toFixed(2)} }\n`;
                 });
