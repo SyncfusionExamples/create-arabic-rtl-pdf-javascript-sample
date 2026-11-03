@@ -32,6 +32,27 @@ public class PdfService
         return await module.InvokeAsync<string>("extractTextFromPdf");
     }
 
+    public async Task<string> GetDefaultSearchTextAsync(IJSRuntime js)
+    {
+        await using var module = await js.InvokeAsync<IJSObjectReference>("import", "./js/pdf-generator.js");
+        return await module.InvokeAsync<string>("getDefaultSearchText");
+    }
+
+    public async Task<string> FindTextAsync(IJSRuntime js, string? searchText)
+    {
+        await using var module = await js.InvokeAsync<IJSObjectReference>("import", "./js/pdf-generator.js");
+        return await module.InvokeAsync<string>("findText", searchText);
+    }
+
+    public async Task<string> HighlightSearchResultsAndSaveAsync(IJSRuntime js, string? searchText)
+    {
+        await using var module = await js.InvokeAsync<IJSObjectReference>("import", "./js/pdf-generator.js");
+        var base64 = await module.InvokeAsync<string>("highlightSearchResults", searchText);
+        var path = Path.Combine(FileSystem.Current.AppDataDirectory, "HighlightedSearchResults.pdf");
+        await File.WriteAllBytesAsync(path, Convert.FromBase64String(base64));
+        return path;
+    }
+
     /// <summary>Opens the PDF in an installed viewer (via FileProvider), or falls back to the share sheet.</summary>
     public async Task OpenAsync(string path)
     {

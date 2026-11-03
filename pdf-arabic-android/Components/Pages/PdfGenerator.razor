@@ -11,6 +11,13 @@
     <button id="extractLinesBtn" @onclick="ExtractAsync" disabled="@_busy">Extract Text</button>
 </div>
 
+<div>
+    <label for="searchTextInput">Search Text</label>
+    <input id="searchTextInput" type="text" dir="rtl" lang="ar" @bind="_searchText" disabled="@_busy" />
+    <button id="findTextBtn" @onclick="FindTextAsync" disabled="@_busy">Find Text</button>
+    <button id="highlightSearchBtn" @onclick="HighlightAsync" disabled="@_busy">Highlight Search Results</button>
+</div>
+
 @if (_path is not null)
 {
     <p class="status">Saved to: @_path</p>
@@ -28,6 +35,7 @@
 @code {
     private string? _extracted;
     private string? _text;
+    private string? _searchText;
     private string? _path;
     private string? _error;
     private bool _busy;
@@ -35,6 +43,7 @@
     protected override async Task OnInitializedAsync()
     {
         _text = await Pdf.GetDefaultTextAsync(JS);
+        _searchText = await Pdf.GetDefaultSearchTextAsync(JS);
     }
 
     private Task GenerateAsync() => RunAsync(async () =>
@@ -48,6 +57,19 @@
         _extracted = null;
         try { _extracted = await Pdf.ExtractTextAsync(JS); }
         catch (Exception ex) { _extracted = $"Error: {ex.Message}"; }
+    });
+
+    private Task FindTextAsync() => RunAsync(async () =>
+    {
+        _extracted = null;
+        try { _extracted = await Pdf.FindTextAsync(JS, _searchText); }
+        catch (Exception ex) { _extracted = $"Error: {ex.Message}"; }
+    });
+
+    private Task HighlightAsync() => RunAsync(async () =>
+    {
+        _path = await Pdf.HighlightSearchResultsAndSaveAsync(JS, _searchText);
+        await Pdf.OpenAsync(_path);
     });
 
     private async Task RunAsync(Func<Task> action)
