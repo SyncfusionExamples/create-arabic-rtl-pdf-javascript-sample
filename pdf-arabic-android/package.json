@@ -7,7 +7,7 @@
   },
   "dependencies": {
     "@syncfusion/ej2-pdf": "*",
-    "@syncfusion/ej2-pdf-data-extract": "*"
+    "@syncfusion/ej2-pdf-data-extract": "35.1.43"
   },
   "devDependencies": {
     "esbuild": "^0.24.0"
