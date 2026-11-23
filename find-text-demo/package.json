@@ -1,0 +1,18 @@
+{
+  "name": "find-text-demo",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Arabic RTL PDF generation, text search and highlighting with Syncfusion EJ2 PDF libraries",
+  "scripts": {
+    "start": "vite --open",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "@syncfusion/ej2-pdf": "*",
+    "@syncfusion/ej2-pdf-data-extract": "*"
+  },
+  "devDependencies": {
+    "vite": "^5.4.0"
+  }
+}

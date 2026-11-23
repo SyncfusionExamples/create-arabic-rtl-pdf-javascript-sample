@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>PDF Find Text Demo</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <main class="app-layout">
+        <section class="left-panel">
+            <h1>Arabic PDF with @syncfusion/ej2-pdf</h1>
+
+            <div class="row">
+                <button id="generateBtn" type="button">Generate PDF</button>
+                <button id="extractBtn" type="button" disabled>Extract Text</button>
+            </div>
+
+            <label for="searchText">Search Text</label>
+            <input id="searchText" type="text" dir="auto" autocomplete="off">
+            <div class="row">
+                <label class="check"><input id="caseSensitive" type="checkbox"> Case sensitive</label>
+                <label class="check"><input id="wholeWord" type="checkbox"> Whole word</label>
+            </div>
+
+            <div class="row">
+                <button id="findHighlightBtn" type="button" disabled>Find text and highlight search results</button>
+                <button id="downloadBtn" type="button" disabled>Download PDF</button>
+            </div>
+
+            <pre id="results" dir="auto">Search results will appear here...</pre>
+        </section>
+
+        <section class="right-panel">
+            <div class="viewer-container">
+                <iframe id="viewer" title="PDF viewer" hidden></iframe>
+                <div id="viewerPlaceholder" class="viewer-placeholder">
+                    PDF preview will be displayed here
+                </div>
+            </div>
+        </section>
+    </main>
+    <script type="module" src="app.js"></script>
+</body>
+</html>

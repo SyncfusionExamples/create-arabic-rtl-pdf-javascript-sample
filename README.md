@@ -1,59 +1,255 @@
-# Arabic PDF generation – .NET MAUI Blazor Hybrid (Android) + `@syncfusion/ej2-pdf`
+# Arabic PDF Processing Samples using Syncfusion EJ2 PDF
 
-A .NET MAUI Blazor Hybrid app that creates an Arabic, right-to-left PDF with the JavaScript package
-[`@syncfusion/ej2-pdf`](https://www.npmjs.com/package/@syncfusion/ej2-pdf) running inside the Blazor WebView.
+This repository contains two end-to-end samples demonstrating Arabic and right-to-left (RTL) PDF workflows using:
 
-## How it works
+- `@syncfusion/ej2-pdf`
+- `@syncfusion/ej2-pdf-data-extract`
 
-1. `js/pdf-generator.js` imports `PdfDocument`, `PdfPageSettings`, `PdfMargins`, `PdfBrush`, `PdfStringFormat`,
-   `PdfTextDirection`, `PdfTextAlignment` and `PdfTrueTypeFont` from `@syncfusion/ej2-pdf`.
-2. The Noto Naskh Arabic TTF is downloaded with `fetch` from
-   `https://cdn.syncfusion.com/content/pdf-resources/noto-naskh-arabic-regular.ttf` (cached after first load) and
-   turned into a `Uint8Array`.
-3. A `PdfTrueTypeFont` is created from those bytes and the text is drawn with a `PdfStringFormat` using
-   `PdfTextDirection.rightToLeft` and `PdfTextAlignment.right`.
-4. The PDF bytes are returned to Blazor as a base64 string through JS interop (`generateArabicPdf`).
-5. `Services/PdfService.cs` decodes them, saves `ArabicSample.pdf` in `FileSystem.Current.AppDataDirectory`, and opens it
-   with an `ACTION_VIEW` intent through a `FileProvider` (falls back to the share sheet if no viewer is installed).
-6. `Components/Pages/PdfGenerator.razor` provides the UI: editable Arabic text and a **Generate PDF** button (saves the PDF and opens it in the Android viewer), an **Extract Text** button, a **Search Text** box, and the **Find Text** and **Highlight Search Results** buttons.
-7. **Extract Text** calls `extractTextFromPdf()`, which downloads (once, then caches) `ArabicText.pdf`, extracts the text lines of page 0 with `PdfDataExtractor` from `@syncfusion/ej2-pdf-data-extract`, and shows them in an RTL, scrollable output block. Failures are logged to the console and shown in the output block.
-8. **Find Text** calls `findText()`. It loads the same `ArabicText.pdf` (the cached download) and searches every page with `PdfDataExtractor.findTextSync(...)` (case-insensitive, not whole-word). The output block lists the search text, the number of pages searched, the number of pages with matches, the result count, and the page number and bounds (`x`, `y`, `width`, `height`) of each match. This step does not change or save the PDF.
-9. **Highlight Search Results** calls `highlightSearchResults()`. It runs the same search, then draws a rectangle with `page.graphics.drawRectangle` at the bounds of each match. Pen colors rotate through red, blue, green, orange and purple. The PDF returns to Blazor as base64, `PdfService` saves it as `HighlightedSearchResults.pdf` in `FileSystem.Current.AppDataDirectory`, and the same viewer step as **Generate PDF** opens it. Nothing is printed to the output block.
+The samples cover PDF generation, Arabic text rendering, RTL text extraction, text searching, search result highlighting, PDF viewing, and PDF downloading across both web and .NET MAUI environments.
 
-The **Search Text** box starts with `ملف`, a word that appears in `ArabicText.pdf`. You can edit it. An empty search or a search with no matches shows a message instead of opening a PDF.
+---
 
-The search API reports page numbers starting at 1. The highlight step converts them to page indexes before drawing.
+## Samples Included
 
-## Project layout
+### 1. .NET MAUI Blazor Hybrid (Android)
 
-| Path | Purpose |
-| --- | --- |
-| `js/pdf-generator.js` | Source module using EJ2 PDF |
-| `wwwroot/js/pdf-generator.js` | esbuild bundle (generated, git-ignored) |
-| `Services/PdfService.cs` | JS interop, save, open, share (generated, extracted and highlighted PDFs) |
-| `Components/Pages/PdfGenerator.razor` | Blazor UI |
-| `Platforms/Android/` | Manifest (INTERNET permission, FileProvider, PDF `queries`) and `file_paths.xml` |
+A .NET MAUI Blazor Hybrid application that hosts Syncfusion JavaScript PDF libraries inside a Blazor WebView.
 
-## Prerequisites
+#### Features
 
-- .NET 9 SDK with the MAUI workload: `dotnet workload install maui-android`
-- Android SDK + an emulator (API 21+)
-- Node.js 18+ (to bundle the JS)
-- Internet access on the emulator/device (to download the font and `ArabicText.pdf`)
+- Arabic RTL PDF generation
+- TrueType font embedding (`PdfTrueTypeFont`)
+- RTL text rendering using `PdfStringFormat`
+- PDF text extraction
+- Text search with bounding box information
+- Search result highlighting
+- Android PDF viewing through native intents
+- PDF sharing fallback support
 
-## Build and run
+#### Key Technologies
+
+- .NET 9 MAUI
+- Blazor Hybrid
+- Android
+- JavaScript Interop
+- `@syncfusion/ej2-pdf`
+- `@syncfusion/ej2-pdf-data-extract`
+
+#### Sample Location
+
+```text
+maui-blazor-hybrid/
+```
+
+#### Run
 
 ```bash
 npm install
-npm run build:js          # bundles @syncfusion/ej2-pdf into wwwroot/js/pdf-generator.js
+npm run build:js
 dotnet build -t:Run -f net9.0-android
 ```
 
-The csproj also runs the npm steps automatically if the bundle is missing. Re-run `npm run build:js` after editing
-`js/pdf-generator.js`.
+---
 
-## Notes
+### 2. JavaScript Find Text Demo
 
-- `@syncfusion/ej2-pdf-data-extract` is pinned to version `35.1.43` in `package.json`.
-- `@syncfusion/ej2-pdf` is a Syncfusion commercial package; a license may be required for production use.
-- The font is fetched at runtime; for offline use, add the TTF to `wwwroot/` and change `arabicFontUrl` to a relative path.
+A standalone JavaScript application demonstrating Arabic PDF processing entirely in the browser.
+
+#### Features
+
+- Arabic RTL PDF generation
+- RTL-aware text extraction
+- Text search with exact bounds
+- Search result highlighting
+- Embedded PDF viewing
+- PDF downloading
+- Responsive split-panel UI
+
+#### Key Technologies
+
+- JavaScript (ES Modules)
+- Vite
+- `@syncfusion/ej2-pdf`
+- `@syncfusion/ej2-pdf-data-extract`
+
+#### Sample Location
+
+```text
+javascript/find-text-demo/
+```
+
+#### Run
+
+```bash
+npm install
+npm start
+```
+
+#### Build
+
+```bash
+npm run build
+```
+
+---
+
+## Supported PDF Workflows
+
+| Capability | MAUI Hybrid | JavaScript |
+|------------|------------|------------|
+| Arabic PDF Generation | ✅ | ✅ |
+| RTL Text Rendering | ✅ | ✅ |
+| TrueType Font Usage | ✅ | ✅ |
+| Text Extraction | ✅ | ✅ |
+| Text Search | ✅ | ✅ |
+| Match Bounding Boxes | ✅ | ✅ |
+| Search Result Highlighting | ✅ | ✅ |
+| PDF Download | ✅ | ✅ |
+| PDF Viewing | Android Viewer | Browser Viewer |
+
+---
+
+## How the Text Search Works
+
+Text searching is performed using `PdfDataExtractor.findTextSync()` from `@syncfusion/ej2-pdf-data-extract`.
+
+For every match, the API returns:
+
+```text
+pageNumber
+x
+y
+width
+height
+```
+
+These bounds can be used for:
+
+- Highlighting search results
+- Drawing annotations
+- Navigation and selection workflows
+- Search result visualization
+
+---
+
+## How Highlighting Works
+
+Search matches are highlighted by drawing rectangles directly onto the PDF page using:
+
+```ts
+page.graphics.drawRectangle(...)
+```
+
+The highlighted PDF can then be:
+
+- Saved
+- Downloaded
+- Displayed in a viewer
+- Shared with users
+
+---
+
+## Font Requirements
+
+Arabic text rendering requires a Unicode-compatible TrueType font.
+
+The samples use **Noto Naskh Arabic**:
+
+```text
+https://cdn.syncfusion.com/content/pdf-resources/noto-naskh-arabic-regular.ttf
+```
+
+For offline scenarios, download the font and bundle it with the application.
+
+---
+
+## Prerequisites
+
+### For .NET MAUI Sample
+
+- .NET 9 SDK
+- MAUI Android workload
+
+```bash
+dotnet workload install maui-android
+```
+
+- Android SDK
+- Android Emulator or Device
+- Node.js 18+
+
+### For JavaScript Sample
+
+- Node.js 18+
+- npm
+
+---
+
+## Install Dependencies
+
+Each sample contains its own `package.json`.
+
+```bash
+npm install
+```
+
+---
+
+## Packages Used
+
+### PDF Creation
+
+```json
+"@syncfusion/ej2-pdf"
+```
+
+### PDF Text Extraction and Search
+
+```json
+"@syncfusion/ej2-pdf-data-extract"
+```
+
+---
+
+## Use Cases Demonstrated
+
+- Arabic document generation
+- RTL language support
+- PDF text extraction
+- Text search and indexing
+- Search result highlighting
+- Coordinates-based PDF content processing
+- Browser PDF viewing
+- Mobile PDF viewing
+- JavaScript PDF workflows
+- Hybrid MAUI + JavaScript integration
+
+---
+
+## License
+
+Syncfusion EJ2 libraries are commercial products and may require a valid license for production use.
+
+Refer to the repository licensing documentation and Syncfusion licensing terms for additional details.
+
+---
+
+## Related Packages
+
+- `@syncfusion/ej2-pdf`
+- `@syncfusion/ej2-pdf-data-extract`
+
+---
+
+## Screenshots
+
+You can add screenshots demonstrating:
+
+- Arabic PDF generation
+- Extracted text results
+- Find text results with bounding coordinates
+- Highlighted search result PDF output
+- Android PDF viewing experience
+- Browser PDF viewing experience
+
+to help users quickly understand the functionality demonstrated by both samples.
